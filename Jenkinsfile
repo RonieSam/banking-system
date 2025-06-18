@@ -1,66 +1,49 @@
 pipeline {
     agent any
-    
-    tools {
-        maven 'Maven-3.8'
-        jdk 'JDK-17'
+
+    environment {
+        DOCKER_IMAGE = 'banking-system'
     }
-    
+
     stages {
         stage('Checkout') {
             steps {
-                checkout scm
+                git 'https://github.com/RonieSam/banking-system.git'
             }
         }
-        
-        stage('Build') {
+
+        stage('Build with Maven') {
             steps {
-                sh 'mvn clean compile'
+                sh 'mvn clean package'
             }
         }
-        
-        stage('Test') {
+
+        stage('Run Tests') {
             steps {
                 sh 'mvn test'
             }
-            post {
-                always {
-                    junit 'target/surefire-reports/*.xml'
-                }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                sh 'docker build -t ${DOCKER_IMAGE} .'
             }
         }
-        
-        stage('Package') {
+
+        stage('Run Docker Compose') {
             steps {
-                sh 'mvn package'
-            }
-        }
-        
-        stage('Docker Build') {
-            steps {
-                script {
-                    docker.build("banking-system:${env.BUILD_NUMBER}")
-                }
-            }
-        }
-        
-        stage('Deploy') {
-            steps {
-                sh 'docker-compose down'
+                sh 'docker-compose down || true'
                 sh 'docker-compose up -d'
             }
         }
     }
-    
+
     post {
         always {
-            cleanWs()
-        }
-        success {
-            echo 'Pipeline succeeded!'
+            echo 'Pipeline finished.'
         }
         failure {
-            echo 'Pipeline failed!'
+            echo 'Pipeline failed.'
         }
     }
 }
