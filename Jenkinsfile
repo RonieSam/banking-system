@@ -1,10 +1,6 @@
 pipeline {
     agent any
 
-    environment {
-        DOCKER_IMAGE = 'banking-system'
-    }
-
     stages {
         stage('Checkout') {
             steps {
@@ -26,14 +22,21 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t ${DOCKER_IMAGE} .'
+                sh 'docker build -t banking-system .'
             }
         }
 
         stage('Run Docker Compose') {
             steps {
-                sh 'docker-compose down || true'
-                sh 'docker-compose up -d'
+                // Stop & remove old containers (ignoring errors if not present)
+                sh '''
+                    docker stop banking-system || true
+                    docker rm banking-system || true
+                    docker stop graphite || true
+                    docker rm graphite || true
+                    docker-compose down || true
+                    docker-compose up -d
+                '''
             }
         }
     }
