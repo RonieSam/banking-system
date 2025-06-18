@@ -1,0 +1,5 @@
+[banking_servers]
+localhost ansible_connection=local
+
+[banking_servers:vars]
+ansible_user=ronie-samuel

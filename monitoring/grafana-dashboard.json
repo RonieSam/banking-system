@@ -1,0 +1,41 @@
+{
+  "id": null,
+  "uid": null,
+  "title": "Banking System Monitoring",
+  "timezone": "browser",
+  "schemaVersion": 27,
+  "version": 1,
+  "panels": [
+    {
+      "type": "graph",
+      "title": "System CPU Usage",
+      "gridPos": { "x": 0, "y": 0, "w": 12, "h": 8 },
+      "targets": [
+        {
+          "target": "banking-system.cpu.usage"
+        }
+      ]
+    },
+    {
+      "type": "graph",
+      "title": "Memory Usage",
+      "gridPos": { "x": 0, "y": 8, "w": 12, "h": 8 },
+      "targets": [
+        {
+          "target": "banking-system.memory.usage"
+        }
+      ]
+    },
+    {
+      "type": "graph",
+      "title": "Application Response Time",
+      "gridPos": { "x": 0, "y": 16, "w": 12, "h": 8 },
+      "targets": [
+        {
+          "target": "banking-system.response.time"
+        }
+      ]
+    }
+  ],
+  "refresh": "5s"
+}

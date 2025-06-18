@@ -1,0 +1,31 @@
+---
+- name: Deploy Banking System Locally
+  hosts: banking_servers
+  become: true
+
+  tasks:
+    # SKIP Docker install (already installed)
+    - name: Start Docker service
+      systemd:
+        name: docker
+        state: started
+        enabled: true
+
+    - name: Create app directory
+      file:
+        path: /opt/banking-system
+        state: directory
+        mode: '0755'
+
+    - name: Copy project files to remote directory
+      synchronize:
+        src: "{{ playbook_dir }}/../"
+        dest: /opt/banking-system
+        recursive: yes
+        delete: no
+
+    - name: Deploy Docker containers
+      shell: |
+        cd /opt/banking-system
+        docker compose down
+        docker compose up -d

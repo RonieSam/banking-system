@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  banking-app:
+    build: .
+    container_name: banking-system
+    ports:
+      - "8085:8080"
+
+    networks:
+      - banking-network
+
+  graphite:
+    image: graphiteapp/graphite-statsd:latest
+    container_name: graphite
+    ports:
+      - "8081:80"
+      - "2003:2003"
+    networks:
+      - banking-network
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    networks:
+      - banking-network
+
+networks:
+  banking-network:
+    driver: bridge
